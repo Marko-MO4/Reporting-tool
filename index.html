@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reporting Tool – Mock UI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">RT</div>
+    <div>
+      <div class="brand-title">Reporting Tool</div>
+      <div class="brand-sub">Web mock-up (no backend)</div>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <div id="envBadge" class="pill">Local demo</div>
+    <div id="userBadge" class="pill hidden"></div>
+    <button id="btnSwitchRole" class="btn ghost hidden">Switch role</button>
+  </div>
+</header>
+
+<main class="container">
+  <!-- LOGIN -->
+  <section id="viewLogin" class="view">
+    <div class="card hero">
+      <h1>Streamlined customer reporting & KPI review</h1>
+      <p class="muted">
+        Clickable interface mock-up for <b>Project/Account Manager</b> and <b>General Manager</b>.
+        Data is simulated in your browser (localStorage) so you can demo the workflow without a backend.
+      </p>
+
+      <div class="grid2">
+        <div class="card inner">
+          <h2>Project / Account Manager</h2>
+          <p class="muted">Weekly updates per customer + monthly rollups.</p>
+          <button id="loginPAM" class="btn primary">Enter PAM workspace</button>
+          <div class="mini muted">Best for: update customers in ~5 minutes each.</div>
+        </div>
+
+        <div class="card inner">
+          <h2>General Manager</h2>
+          <p class="muted">One-glance overview + drill-down.</p>
+          <button id="loginGM" class="btn primary">Enter GM dashboard</button>
+          <div class="mini muted">Best for: review risks, revenue-at-risk, incidents, trends.</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">Demo controls</div>
+        <div class="row wrap gap">
+          <button id="seedData" class="btn">Seed demo data</button>
+          <button id="resetData" class="btn danger">Reset data</button>
+        </div>
+        <ul class="mini muted">
+          <li>Update a customer in PAM, then switch role to GM to see the impact.</li>
+          <li>The “Last updated” timestamp helps keep old status valid when nothing changes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAM -->
+  <section id="viewPAM" class="view hidden">
+    <div class="row space">
+      <div>
+        <h2>Project / Account Manager</h2>
+        <div class="muted mini">Weekly per-customer report · fast update flow</div>
+      </div>
+      <div class="row gap">
+        <div class="seg">
+          <button class="seg-btn active" data-tab="customers">Customers</button>
+          <button class="seg-btn" data-tab="monthly">Monthly</button>
+        </div>
+        <button id="btnPAMNewCustomer" class="btn">+ Add customer</button>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title">Customer list</div>
+        <div class="row gap">
+          <input id="pamSearch" class="input" placeholder="Search customers…" />
+          <select id="pamFilterStatus" class="input">
+            <option value="">All</option>
+            <option value="Green">Green</option>
+            <option value="Amber">Amber</option>
+            <option value="Red">Red</option>
+          </select>
+        </div>
+        <div id="pamCustomerList" class="list"></div>
+      </div>
+
+      <div class="card span2">
+        <div class="row space">
+          <div>
+            <div class="card-title" id="pamEditorTitle">Select a customer</div>
+            <div class="muted mini" id="pamEditorSub">Pick a customer to edit their weekly report.</div>
+          </div>
+          <div class="row gap">
+            <button id="btnMarkNoChange" class="btn ghost hidden">Mark “No change”</button>
+            <button id="btnSaveWeekly" class="btn primary hidden">Save</button>
+          </div>
+        </div>
+
+        <div id="pamEditor" class="hidden">
+          <div class="grid2">
+            <div>
+              <label class="label">Customer status</label>
+              <div class="row gap">
+                <button class="status-btn" data-status="Green">Green</button>
+                <button class="status-btn" data-status="Amber">Amber</button>
+                <button class="status-btn" data-status="Red">Red</button>
+              </div>
+              <div class="mini muted">Tip: if nothing changed, don’t edit — keep status valid.</div>
+            </div>
+
+            <div>
+              <label class="label">Last updated</label>
+              <div class="pill" id="pamLastUpdated">—</div>
+              <div class="mini muted">Used by GM for freshness / stale status detection.</div>
+            </div>
+          </div>
+
+          <hr class="sep" />
+
+          <div class="grid2">
+            <div>
+              <label class="label">Open commitments & promised delivery dates</label>
+              <textarea id="pamCommitments" class="textarea" rows="4" placeholder="• Deliver X by 2026-03-01 …"></textarea>
+            </div>
+            <div>
+              <label class="label">Key risks (delivery / operational / commercial)</label>
+              <textarea id="pamRisks" class="textarea" rows="4" placeholder="• Risk: …  Mitigation: …  Owner: …"></textarea>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div>
+              <label class="label">Open incidents impacting customers</label>
+              <textarea id="pamIncidents" class="textarea" rows="4" placeholder="• Sev2 outage on … Impact …"></textarea>
+            </div>
+            <div>
+              <label class="label">Escalations required</label>
+              <textarea id="pamEscalations" class="textarea" rows="4" placeholder="Decision needed / resource conflict / support from GM…"></textarea>
+            </div>
+          </div>
+
+          <hr class="sep" />
+
+          <div class="grid2">
+            <div>
+              <label class="label">Notes / narrative (optional)</label>
+              <textarea id="pamNotes" class="textarea" rows="3" placeholder="Context for GM: what's changed, why it matters…"></textarea>
+            </div>
+            <div>
+              <label class="label">Quick tags</label>
+              <div class="chips" id="pamChips"></div>
+              <div class="mini muted">Use to highlight themes (renewal, backlog, incidents, delivery…)</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="pamEmpty" class="empty">
+          <div class="empty-title">No customer selected</div>
+          <div class="muted">Choose a customer from the list, or add a new one.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pamMonthly" class="card hidden">
+      <div class="row space">
+        <div>
+          <div class="card-title">Monthly rollup (per manager)</div>
+          <div class="mini muted">Editable summary fields used for GM monthly review.</div>
+        </div>
+        <button id="btnSaveMonthly" class="btn primary">Save monthly</button>
+      </div>
+
+      <div class="grid3">
+        <div>
+          <label class="label">Active customers</label>
+          <input id="mActiveCustomers" class="input" type="number" min="0" />
+        </div>
+        <div>
+          <label class="label">Revenue at risk (€ estimate)</label>
+          <input id="mRevenueAtRisk" class="input" type="number" min="0" step="1000" />
+        </div>
+        <div>
+          <label class="label">Renewals / expansions expected</label>
+          <input id="mRenewals" class="input" placeholder="e.g., 3 renewals, 1 upsell" />
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <label class="label">Contractual obligations due next quarter</label>
+          <textarea id="mObligations" class="textarea" rows="3"></textarea>
+        </div>
+        <div>
+          <label class="label">Scope changes requested vs approved</label>
+          <textarea id="mScopeChanges" class="textarea" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div>
+          <label class="label">Open customer requests (by priority)</label>
+          <textarea id="mRequests" class="textarea" rows="3" placeholder="P0: 1, P1: 4, P2: 7"></textarea>
+        </div>
+        <div>
+          <label class="label">Avg ticket age (days)</label>
+          <input id="mAvgTicketAge" class="input" type="number" min="0" />
+        </div>
+        <div>
+          <label class="label">Delivery predictability</label>
+          <input id="mPredictability" class="input" placeholder="e.g., 85% on-time" />
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <label class="label">Customer-facing incidents (count & severity)</label>
+          <textarea id="mCFIncidents" class="textarea" rows="3"></textarea>
+        </div>
+        <div>
+          <label class="label">Adoption / usage signals</label>
+          <textarea id="mAdoption" class="textarea" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GM -->
+  <section id="viewGM" class="view hidden">
+    <div class="row space">
+      <div>
+        <h2>General Manager dashboard</h2>
+        <div class="muted mini">Quick glance overview · drill down by customer and manager</div>
+      </div>
+      <div class="row gap">
+        <input id="gmSearch" class="input" placeholder="Search customers…" />
+        <select id="gmFilterFresh" class="input">
+          <option value="">Freshness: All</option>
+          <option value="fresh">Updated ≤ 7 days</option>
+          <option value="stale">Stale &gt; 7 days</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi card">
+        <div class="kpi-label">Customers</div>
+        <div class="kpi-value" id="gmKpiCustomers">—</div>
+        <div class="kpi-foot muted mini">Total tracked</div>
+      </div>
+      <div class="kpi card">
+        <div class="kpi-label">Health</div>
+        <div class="kpi-value" id="gmKpiHealth">—</div>
+        <div class="kpi-foot muted mini">Green / Amber / Red</div>
+      </div>
+      <div class="kpi card">
+        <div class="kpi-label">Revenue at risk</div>
+        <div class="kpi-value" id="gmKpiRAR">—</div>
+        <div class="kpi-foot muted mini">From monthly rollups</div>
+      </div>
+      <div class="kpi card">
+        <div class="kpi-label">Incidents</div>
+        <div class="kpi-value" id="gmKpiIncidents">—</div>
+        <div class="kpi-foot muted mini">Customers w/ incidents listed</div>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title">Attention needed</div>
+        <div id="gmAttention" class="list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Stale updates</div>
+        <div id="gmStale" class="list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Commercial signals</div>
+        <div id="gmCommercial" class="list"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row space">
+        <div>
+          <div class="card-title">All customers</div>
+          <div class="mini muted">Click a row to drill down.</div>
+        </div>
+        <div class="row gap">
+          <button id="gmExport" class="btn ghost">Export (JSON)</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="table" id="gmTable">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Status</th>
+              <th>Updated</th>
+              <th>Risks</th>
+              <th>Incidents</th>
+              <th>Escalation</th>
+              <th>Tags</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="gmDrawer" class="drawer hidden">
+      <div class="drawer-card card">
+        <div class="row space">
+          <div>
+            <div class="drawer-title" id="gmDrawerTitle">Customer</div>
+            <div class="mini muted" id="gmDrawerSub">Weekly details</div>
+          </div>
+          <button id="gmDrawerClose" class="btn ghost">Close</button>
+        </div>
+        <div class="drawer-body">
+          <div class="grid2">
+            <div>
+              <div class="label">Commitments</div>
+              <div class="pre" id="gmDCommitments"></div>
+            </div>
+            <div>
+              <div class="label">Key risks</div>
+              <div class="pre" id="gmDRisks"></div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div>
+              <div class="label">Incidents</div>
+              <div class="pre" id="gmDIncidents"></div>
+            </div>
+            <div>
+              <div class="label">Escalations</div>
+              <div class="pre" id="gmDEscalations"></div>
+            </div>
+          </div>
+          <div>
+            <div class="label">Notes</div>
+            <div class="pre" id="gmDNotes"></div>
+          </div>
+          <hr class="sep" />
+          <div class="mini muted">
+            In production, this drawer could include: KPI trends, ticket age, incident severity timeline, renewal probability, and owners.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
